@@ -30,6 +30,7 @@ Skip:
 - Clean
 - Compile
 - Coverage
+- Final
 - GenerateGlobalSolution
 - GeneratePublicApi
 - GenerateTools
@@ -52,6 +53,7 @@ Target:
 - Clean
 - Compile
 - Coverage
+- Final
 - GenerateGlobalSolution
 - GeneratePublicApi
 - GenerateTools

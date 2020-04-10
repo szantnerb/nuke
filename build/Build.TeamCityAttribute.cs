@@ -35,7 +35,8 @@ partial class Build
                                  { nameof(Pack), "📦" },
                                  { nameof(Coverage), "📊" },
                                  { nameof(Publish), "🚚" },
-                                 { nameof(Announce), "🗣" }
+                                 { nameof(Announce), "🗣" },
+                                 { nameof(Final), "🗣" }
                              };
             return base.GetBuildTypes(build, executableTarget, vcsRoot, buildTypes, relevantTargets)
                 .ForEachLazy(x =>
