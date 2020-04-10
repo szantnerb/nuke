@@ -77,6 +77,15 @@ namespace Nuke.Common.Tests.Execution
             GetPlan().Should().Equal(B, A, C);
         }
 
+        [Fact]
+        public void TestExternalDependencies()
+        {
+            A.ExecutionDependencies.Add(B);
+            B.ExecutionDependencies.Add(new ExecutableTarget { Name = "External" });
+
+            GetPlan().Should().Equal(B, A);
+        }
+
         private IEnumerable<ExecutableTarget> GetPlan(ExecutableTarget[] invokedTargets = null)
         {
             static string[] SelectNames(ExecutableTarget[] targets) => targets?.Select(x => x.Name).ToArray();
