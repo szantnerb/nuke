@@ -219,15 +219,6 @@ namespace Nuke.GlobalTool
                                 NukeVersionMajorMinor = nukeVersion.Split(".").Take(2).Join(".")
                             }))));
 
-            if (projectFormat == FORMAT_LEGACY)
-            {
-                TextTasks.WriteAllLines(
-                    Path.Combine(buildDirectory, "packages.config"),
-                    FillTemplate(
-                        GetTemplate("_build.legacy.packages.config"),
-                        tokens: GetDictionary(new { NukeVersion = nukeVersion })));
-            }
-
             TextTasks.WriteAllLines(
                 $"{buildProjectFile}.DotSettings",
                 GetTemplate("_build.csproj.DotSettings"));
