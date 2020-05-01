@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -27,12 +28,11 @@ namespace Nuke.Common.CI.TeamCity
             Platform = platform;
         }
 
-        private AbsolutePath TeamcityDirectory => NukeBuild.RootDirectory / ".teamcity";
-        private string SettingsFile => TeamcityDirectory / "settings.kts";
-        private string PomFile => TeamcityDirectory / "pom.xml";
-
         public override HostType HostType => HostType.TeamCity;
-        public override IEnumerable<string> GeneratedFiles => new[] { PomFile, SettingsFile };
+        public override string ConfigurationFile => TeamcityDirectory / "settings.kts";
+        public override IEnumerable<string> GeneratedFiles => new[] { PomFile, ConfigurationFile };
+        private AbsolutePath TeamcityDirectory => NukeBuild.RootDirectory / ".teamcity";
+        private string PomFile => TeamcityDirectory / "pom.xml";
 
         public override IEnumerable<string> RelevantTargetNames => new string[0]
             .Concat(VcsTriggeredTargets)
@@ -56,17 +56,22 @@ namespace Nuke.Common.CI.TeamCity
 
         public string[] ManuallyTriggeredTargets { get; set; } = new string[0];
 
-        public override CustomFileWriter CreateWriter()
-        {
-            return new CustomFileWriter(SettingsFile, indentationFactor: 4, commentPrefix: "//");
-        }
-
-        public override ConfigurationEntity GetConfiguration(NukeBuild build, IReadOnlyCollection<ExecutableTarget> relevantTargets)
+        protected override Stream CreateStream()
         {
             TextTasks.WriteAllLines(
                 PomFile,
                 ResourceUtility.GetResourceAllLines<TeamCityConfiguration>("pom.xml"));
 
+            return base.CreateStream();
+        }
+
+        public override CustomFileWriter CreateWriter(Stream stream)
+        {
+            return new CustomFileWriter(stream, indentationFactor: 4, commentPrefix: "//");
+        }
+
+        public override ConfigurationEntity GetConfiguration(NukeBuild build, IReadOnlyCollection<ExecutableTarget> relevantTargets)
+        {
             return new TeamCityConfiguration
                    {
                        Version = Version,
